@@ -210,7 +210,10 @@ class Collection(common.BaseObject):
         .. mongodoc:: insert
         """
         if not isinstance(to_save, dict):
-            raise TypeError("cannot save object of type %s" % type(to_save))
+            if not hasattr(to_save, "__dict__"):
+                raise TypeError("cannot save object of type %s" % type(to_save))
+            else:
+                to_save = to_save.__dict__
 
         if "_id" not in to_save:
             return self.insert(to_save, manipulate, safe, **kwargs)
